@@ -18,12 +18,12 @@ public class User {
         Calendar calendar2 = Calendar.getInstance();
         calendar2.set(1990, Calendar.DECEMBER, 10);
         Date date = Date.from(calendar2.toInstant());
-        User user5 = new User("Степан", 2, date);
-        User user6 = new User("Степан", 2, date);
-        Map<User, Object> map3 = new HashMap<>();
-        map3.put(user5, "object_1");
-        map3.put(user6, "object_2");
-        System.out.println("Переопределен только equals: " + map3);
+        User user7 = new User("Степан", 2, date);
+        User user8 = new User("Степан", 2, date);
+        Map<User, Object> map4 = new HashMap<>();
+        map4.put(user7, "object_1");
+        map4.put(user8, "object_2");
+        System.out.println("Переопределен hashCode и equals: " + map4);
     }
 
     @Override
@@ -32,6 +32,11 @@ public class User {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return children == user.children && Objects.equals(name, user.name) && Objects.equals(birthday, user.birthday);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, children, birthday);
     }
 
     @Override
