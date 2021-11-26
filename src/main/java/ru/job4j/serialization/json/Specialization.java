@@ -1,7 +1,16 @@
 package ru.job4j.serialization.json;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "specialization")
 public class Specialization {
-    private final String speciality;
+
+    @XmlAttribute
+    private String speciality;
+
+    public Specialization() {
+    }
 
     public Specialization(String speciality) {
         this.speciality = speciality;
