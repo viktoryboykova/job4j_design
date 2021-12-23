@@ -2,6 +2,7 @@ package ru.job4j.design.srp;
 
 import org.junit.Test;
 
+import javax.xml.bind.JAXBException;
 import java.util.Calendar;
 
 import static org.hamcrest.Matchers.is;
@@ -10,7 +11,7 @@ import static org.junit.Assert.*;
 public class ReportEngineTest {
 
     @Test
-    public void whenOldGenerated() {
+    public void whenOldGenerated() throws JAXBException {
         MemStore store = new MemStore();
         Calendar now = Calendar.getInstance();
         Employee worker = new Employee("Ivan", now, now, 100);
@@ -28,7 +29,7 @@ public class ReportEngineTest {
     }
 
     @Test
-    public void whenGeneratedForProgrammers() {
+    public void whenGeneratedForProgrammers() throws JAXBException {
         MemStore store = new MemStore();
         Calendar now = Calendar.getInstance();
         Employee worker = new Employee("Ivan", now, now, 100);
@@ -60,7 +61,7 @@ public class ReportEngineTest {
     }
 
     @Test
-    public void whenGeneratedForBookkeeping() {
+    public void whenGeneratedForBookkeeping() throws JAXBException {
         MemStore store = new MemStore();
         Calendar now = Calendar.getInstance();
         Employee worker = new Employee("Ivan", now, now, 100);
@@ -78,7 +79,7 @@ public class ReportEngineTest {
     }
 
     @Test
-    public void whenGeneratedForHR() {
+    public void whenGeneratedForHR() throws JAXBException {
         MemStore store = new MemStore();
         Calendar now = Calendar.getInstance();
         Employee worker1 = new Employee("Ivan", now, now, 100);
@@ -103,4 +104,63 @@ public class ReportEngineTest {
         assertThat(engine.generate(em -> true), is(expect.toString()));
     }
 
+    @Test
+    public void whenGeneratedJSON() throws JAXBException {
+        MemStore store = new MemStore();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2021, Calendar.DECEMBER, 23, 0, 0, 0);
+        Employee emp1 = new Employee("abc", calendar, calendar, 200);
+        Employee emp2 = new Employee("def", calendar, calendar, 1500);
+        store.add(emp1);
+        store.add(emp2);
+        Report engine = new ReportJSON(store);
+        String expected =
+                "{"
+                        + "\"name\":\"abc\","
+                        + "\"hired\":"
+                        + "{"
+                        + "\"year\":2021,"
+                        + "\"month\":11,"
+                        + "\"dayOfMonth\":23,"
+                        + "\"hourOfDay\":0,"
+                        + "\"minute\":0,"
+                        + "\"second\":0"
+                        + "},"
+                        + "\"fired\":"
+                        + "{"
+                        + "\"year\":2021,"
+                        + "\"month\":11,"
+                        + "\"dayOfMonth\":23,"
+                        + "\"hourOfDay\":0,"
+                        + "\"minute\":0,"
+                        + "\"second\":0"
+                        + "},"
+                        + "\"salary\":200.0"
+                        + "}"
+                        + System.lineSeparator()
+                        + "{"
+                        + "\"name\":\"def\","
+                        + "\"hired\":"
+                        + "{"
+                        + "\"year\":2021,"
+                        + "\"month\":11,"
+                        + "\"dayOfMonth\":23,"
+                        + "\"hourOfDay\":0,"
+                        + "\"minute\":0,"
+                        + "\"second\":0"
+                        + "},"
+                        + "\"fired\":"
+                        + "{"
+                        + "\"year\":2021,"
+                        + "\"month\":11,"
+                        + "\"dayOfMonth\":23,"
+                        + "\"hourOfDay\":0,"
+                        + "\"minute\":0,"
+                        + "\"second\":0"
+                        + "},"
+                        + "\"salary\":1500.0"
+                        + "}"
+                        + System.lineSeparator();
+        assertThat(engine.generate(em -> true), is(expected));
+    }
 }
