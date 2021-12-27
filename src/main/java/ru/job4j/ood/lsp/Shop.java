@@ -2,6 +2,7 @@ package ru.job4j.ood.lsp;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class Shop implements Store {
@@ -25,7 +26,7 @@ public class Shop implements Store {
         boolean result = false;
         if (test(food)) {
             foodInShop.add(food);
-            System.out.println("Продукт добавлен в магазин");
+            System.out.println("Продукт " + food.getName() + " добавлен в магазин");
             result = true;
         }
         return result;
@@ -34,8 +35,8 @@ public class Shop implements Store {
     @Override
     public boolean test(Food food) {
         boolean result = false;
-        long expiryDays = Period.between(food.getCreateDate(), food.getExpiryDate()).getDays();
-        long endDays = Period.between(food.getCreateDate(), LocalDate.now()).getDays();
+        long expiryDays = ChronoUnit.DAYS.between(food.getCreateDate(), food.getExpiryDate());
+        long endDays = ChronoUnit.DAYS.between(food.getCreateDate(), LocalDate.now());
         if (endDays > expiryDays * 0.25 && endDays < expiryDays) {
             result = true;
             if (endDays > expiryDays * 0.75) {
@@ -43,5 +44,10 @@ public class Shop implements Store {
             }
         }
         return result;
+    }
+
+    @Override
+    public List<Food> getFood() {
+        return foodInShop;
     }
 }
